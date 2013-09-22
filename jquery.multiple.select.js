@@ -9,6 +9,10 @@
 			
 	'use strict';
 
+    function s4() {
+       return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+    }
+
 	function MultipleSelect($el, options) {
 		var that = this,
 			elWidth = $el.width();
@@ -67,10 +71,8 @@
 			if (this.options.selectAll) {
 				html.push(
 					'<li>',
-						'<label>',
-							'<input type="checkbox" name="selectAll" /> ',
-							'[' + this.options.selectAllText + ']',
-						'</label>',
+                        '<input type="checkbox" name="selectAll" id="selectAll" /> ',
+                        '<label for="selectAll"><span class="check"></span>[' + this.options.selectAllText + ']</label>',
 					'</li>'
 				);
 			}
@@ -96,6 +98,8 @@
 				$elm = $(elm),
 				html = [],
 				multiple = this.options.multiple;
+            var id = this.$el.attr("id") || s4();
+            id = 'select-option-' + id + '-' + i;
 			if ($elm.is('option')) {
 				var value = $elm.val(),
 					text = $elm.text(),
@@ -103,14 +107,15 @@
 					disabled = groupDisabled || $elm.prop('disabled');
 				html.push(
 					'<li' + (multiple ? ' class="multiple"' : '') + '>',
-						'<label' + (disabled ? ' class="disabled"' : '') + '>',
-							'<input type="checkbox" name="selectItem" value="' + value + '"' + 
+							'<input type="checkbox" name="selectItem" id="' + id + '" value="' + value + '"' +
 								(selected ? ' checked="checked"' : '') +
 								(disabled ? ' disabled="disabled"' : '') +
 								(group ? ' data-group="' + group + '"' : '') + 
 								'/> ',
-							text,
-						'</label>',
+                            '<label' + (disabled ? ' class="disabled"' : '') + ' for="' + id + '">',
+                                '<span class="check"></span>',
+							    text,
+						    '</label>',
 					'</li>'
 				);
 			} else if (!group && $elm.is('optgroup')) {
